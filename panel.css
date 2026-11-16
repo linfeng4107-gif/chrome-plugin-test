@@ -1,0 +1,416 @@
+/* Amazon 工作台 · 面板样式（全部限定在 #aplus-root 内，不污染宿主页面） */
+#aplus-root{
+  --bg:#F4F6F8; --panel:#FFFFFF; --panel2:#FBFCFD; --sunk:#F1F3F5;
+  --line:rgba(19,23,28,.10); --line2:rgba(19,23,28,.18);
+  --txt:#1B1F24; --txt2:#525C64; --txt3:#8B949C;
+  --accent:#0285EC; --accent-soft:rgba(2,133,236,.10);
+  --fs:1;
+  --ok:#2E8B62; --warn:#B5761E;
+  --card:#FFFFFF;
+  position:fixed!important;top:0!important;left:auto;right:auto;height:auto;
+  width:900px;z-index:2147483000!important;
+  margin:0!important;padding:0!important;transform:none!important;
+  opacity:1!important;visibility:visible!important;max-width:none!important;
+  display:flex!important;align-items:stretch;
+  border-radius:12px;border:1px solid var(--line2);overflow:hidden;
+  box-shadow:0 24px 64px rgba(12,18,26,.32),0 2px 8px rgba(12,18,26,.14);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,"Microsoft YaHei",sans-serif;
+  color:var(--txt);font-size:calc(12px * var(--fs));line-height:1.55;
+}
+#aplus-root[data-theme="paper"]{
+  --bg:#EDE7DD; --panel:#FFFDF8; --panel2:#FBF6ED; --sunk:#F2ECE1;
+  --line:rgba(60,45,30,.12); --line2:rgba(60,45,30,.20);
+  --txt:#2A231D; --txt2:#63574B; --txt3:#978A7C; --accent:#C2703A; --accent-soft:rgba(194,112,58,.12);
+}
+#aplus-root[data-theme="dark"]{
+  --bg:#141719; --panel:#1C2023; --panel2:#171B1E; --sunk:#101314;
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+  --txt:#E9ECEF; --txt2:#A0A8B0; --txt3:#6E777F; --accent:#31A0F5; --accent-soft:rgba(49,160,245,.14);
+  --ok:#3FBF87; --warn:#E5A03B;
+  box-shadow:-18px 0 44px rgba(0,0,0,.45);
+}
+#aplus-root *{box-sizing:border-box}
+#aplus-root .ap-handle{display:none}
+#aplus-root .ap-shell{
+  flex:1;min-width:0;display:flex;flex-direction:column;background:var(--panel);
+  height:100%;overflow:hidden;
+}
+#aplus-root .ap-collapsed{display:none}
+/* 整窗折叠成一条标题条 */
+#aplus-root.collapsed .ap-body,#aplus-root.collapsed .ap-ft{display:none}
+#aplus-root.collapsed{border-radius:10px}
+
+#aplus-root .ap-hd{
+  flex:none;display:flex;align-items:center;gap:7px;height:38px;padding:0 10px 0 12px;
+  border-bottom:1px solid var(--line);background:var(--panel2);cursor:move;
+  border-radius:12px 12px 0 0;user-select:none;
+}
+#aplus-root.collapsed .ap-hd{border-bottom:0;border-radius:10px}
+#aplus-root.collapsed #apDock,#aplus-root.collapsed #apLayout{display:none}
+#aplus-root.collapsed .ap-ttl{white-space:nowrap}
+#aplus-root .ap-logo{width:22px;height:22px;border-radius:6px;background:var(--accent);color:#fff;font-size:calc(11px * var(--fs));font-weight:700;display:flex;align-items:center;justify-content:center;letter-spacing:.4px}
+#aplus-root .ap-ttl{font-size:calc(12.5px * var(--fs));font-weight:600}
+#aplus-root .ap-grow{flex:1;min-width:0}
+#aplus-root .ap-ico{height:24px;padding:0 8px;border:1px solid var(--line2);border-radius:5px;background:transparent;color:var(--txt2);font-size:calc(11px * var(--fs));cursor:pointer;font-family:inherit}
+#aplus-root .ap-ico:hover{color:var(--accent);border-color:var(--accent)}
+#aplus-root .ap-ico.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+/* 顶部按钮：线性图标版（省宽度，视觉更安静） */
+#aplus-root .ap-icon{width:26px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+#aplus-root .ap-icon svg{width:15px;height:15px;display:block;stroke:currentColor;stroke-width:1.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#aplus-root .ap-icon svg circle,#aplus-root .ap-icon svg rect{fill:none;stroke:currentColor;stroke-width:1.4}
+#aplus-root .ap-icon .ic-col{display:none}
+#aplus-root.col .ap-icon .ic-row{display:none}
+#aplus-root.col .ap-icon .ic-col{display:block}
+/* 调板标题栏的「拆出 / 收回」图标按钮 */
+#aplus-root .ap-icon2{width:22px;padding:0;display:inline-flex;align-items:center;justify-content:center;flex:none}
+#aplus-root .ap-icon2 svg{width:12px;height:12px;display:block;stroke:currentColor;stroke-width:1.3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#aplus-root .ap-icon2 svg rect{fill:none;stroke:currentColor;stroke-width:1.3}
+#aplus-root .ap-icon2.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+
+#aplus-root .ap-body{flex:1;min-height:0;display:flex;gap:8px;padding:8px;overflow:hidden;background:var(--bg)}
+#aplus-root .ap-body[data-layout="col"]{flex-direction:column;overflow:auto}
+
+/* 每个作业区 = 一块可折叠、可拖动排序的调板 */
+#aplus-root .ap-pad{
+  display:flex;flex-direction:column;flex:1 1 0;min-width:0;min-height:0;
+  background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;
+}
+#aplus-root .ap-pad[data-pad="doc"]{flex:1.35 1 0;background:var(--panel2)}
+#aplus-root .ap-body[data-layout="col"] .ap-pad{flex:0 0 auto}
+#aplus-root .ap-pad.dragging{opacity:.55;outline:2px dashed var(--accent);outline-offset:-2px}
+#aplus-root .ap-pad-hd{
+  flex:none;display:flex;align-items:center;gap:6px;height:31px;padding:0 8px;
+  border-bottom:1px solid var(--line);background:var(--panel2);overflow:hidden;
+}
+#aplus-root .ap-pad-hd b{font-size:calc(11.5px * var(--fs));font-weight:600;white-space:nowrap}
+#aplus-root .ap-grip{cursor:grab;color:var(--txt3);font-size:calc(11px * var(--fs));letter-spacing:.5px;padding:0 1px;user-select:none}
+#aplus-root .ap-grip:active{cursor:grabbing}
+#aplus-root .ap-pad-bd{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;padding:9px;overflow:auto}
+#aplus-root .ap-pad-bd > .ap-card{border:0;padding:0;background:transparent;border-radius:0;overflow:visible;flex:0 0 auto}
+#aplus-root .ap-pad.collapsed{flex:0 0 auto}
+#aplus-root .ap-pad.collapsed .ap-pad-bd{display:none}
+#aplus-root .ap-pad.collapsed .ap-importbtn{display:none}
+#aplus-root .ap-pad.collapsed .ap-pad-hd{border-bottom:0}
+#aplus-root .ap-pad.collapsed .ap-pad-hd button:not(.ap-padfold){display:none}
+#aplus-root .ap-body[data-layout="row"] .ap-pad.collapsed{flex:0 0 30px;max-width:30px}
+#aplus-root .ap-body[data-layout="row"] .ap-pad.collapsed .ap-pad-hd{
+  writing-mode:vertical-rl;height:100%;width:30px;padding:8px 0;justify-content:flex-start;gap:8px;
+}
+#aplus-root .ap-padfold{padding:0 5px;color:var(--txt3);flex:none}
+#aplus-root .ap-padout{padding:0 5px;color:var(--txt3);flex:none;font-size:calc(10px * var(--fs));letter-spacing:0}
+#aplus-root .ap-padout.on{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+
+/* 拆出的独立调板：脱离排版，自己当一个浮动窗口 */
+#aplus-root .ap-pad.ap-out{
+  position:fixed;flex:none;min-width:0;min-height:0;z-index:2147483100;
+  border:1px solid var(--line2);border-radius:10px;
+  background:var(--card);
+  box-shadow:0 18px 46px rgba(12,18,26,.26),0 2px 6px rgba(12,18,26,.12);
+  overflow:hidden;
+}
+#aplus-root .ap-pad.ap-out[data-pad="doc"]{background:var(--panel2)}
+#aplus-root .ap-pad.ap-out .ap-pad-hd{cursor:move;height:32px}
+#aplus-root .ap-pad.ap-out .ap-grip{cursor:move}
+#aplus-root .ap-pad.ap-out.collapsed .ap-pad-hd button{display:inline-block}
+#aplus-root .ap-pad.ap-out.collapsed .ap-pad-hd{
+  writing-mode:horizontal-tb;height:32px;width:auto;padding:0 8px;
+  justify-content:flex-start;gap:6px;
+}
+#aplus-root .ap-pad.ap-out.collapsed{border-radius:8px}
+#aplus-root .ap-pad.ap-out .ap-padresize{
+  position:absolute;right:0;bottom:0;width:15px;height:15px;cursor:nwse-resize;z-index:9;
+}
+#aplus-root .ap-pad.ap-out .ap-padresize::after{
+  content:'';position:absolute;right:3px;bottom:3px;width:8px;height:8px;
+  border-right:1px solid var(--line2);border-bottom:1px solid var(--line2);
+}
+#aplus-root .ap-pad.ap-out .ap-padresize.ap-l{
+  right:auto;left:0;cursor:nesw-resize;
+}
+#aplus-root .ap-pad.ap-out .ap-padresize.ap-l::after{
+  right:auto;left:3px;border-right:0;border-left:1px solid var(--line2);
+}
+#aplus-root .ap-bodyhint{
+  flex:1;display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:24px 18px;color:var(--txt3);font-size:calc(12px * var(--fs));line-height:1.7;
+}
+
+/* 右下角 / 左下角缩放 */
+#aplus-root .ap-resize{position:absolute;right:0;bottom:0;width:16px;height:16px;cursor:nwse-resize;z-index:8}
+#aplus-root .ap-resize::after{
+  content:'';position:absolute;right:3px;bottom:3px;width:9px;height:9px;
+  border-right:1px solid var(--line2);border-bottom:1px solid var(--line2);
+}
+#aplus-root .ap-resize.ap-l{right:auto;left:0;cursor:nesw-resize}
+#aplus-root .ap-resize.ap-l::after{right:auto;left:3px;border-right:0;border-left:1px solid var(--line2)}
+#aplus-root .ap-card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 10px;display:flex;flex-direction:column;gap:7px;min-width:0;overflow:hidden}
+#aplus-root .ap-grow-col{flex:1;min-height:0}
+#aplus-root .ap-lbl{font-size:calc(10.5px * var(--fs));color:var(--txt3);letter-spacing:.2px}
+
+/* 文档空态：虚线投放区，点击即选文件，也可直接拖入 */
+#aplus-root .ap-drop{
+  margin:8px 0 2px;padding:22px 12px;border:1px dashed var(--line2);border-radius:8px;
+  display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;
+  color:var(--txt3);cursor:pointer;background:var(--panel2);
+  transition:border-color .15s,background .15s,color .15s;
+}
+#aplus-root .ap-drop b{color:var(--txt2);font-size:calc(12px * var(--fs));font-weight:600}
+#aplus-root .ap-drop span{font-size:calc(10.5px * var(--fs))}
+#aplus-root .ap-drop:hover,#aplus-root .ap-drop.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+#aplus-root .ap-drop.on b{color:var(--accent)}
+#aplus-root .ap-h{font-size:calc(11.5px * var(--fs));font-weight:600;white-space:nowrap}
+#aplus-root .ap-hint{font-size:calc(10.5px * var(--fs));color:var(--txt3);line-height:1.5}
+#aplus-root .ap-num{font-variant-numeric:tabular-nums;font-weight:700;color:var(--accent);font-size:calc(11.5px * var(--fs))}
+#aplus-root .ap-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#aplus-root .ap-flex{flex:1;min-width:0}
+
+#aplus-root .ap-ta,#aplus-root .ap-inp,#aplus-root .ap-sel{
+  width:100%;border:1px solid var(--line2);border-radius:5px;background:var(--sunk);color:var(--txt);
+  font-family:inherit;font-size:calc(11.5px * var(--fs));line-height:1.6;padding:6px 8px;outline:none;resize:vertical;
+}
+#aplus-root .ap-ta:focus,#aplus-root .ap-inp:focus,#aplus-root .ap-sel:focus{border-color:var(--accent);background:var(--panel)}
+#aplus-root .ap-ta{min-height:52px}
+#aplus-root .ap-pre{flex:1 1 70px;min-width:56px;max-width:110px;padding:4px 7px;line-height:1.5}
+#aplus-root .ap-prompt{flex:0 0 auto;height:150px;min-height:70px;max-height:70vh;font-size:calc(11.5px * var(--fs));resize:vertical}
+#aplus-root .ap-sel{height:26px;padding:0 6px;resize:none}
+
+#aplus-root .ap-tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);padding-bottom:6px;flex-wrap:wrap}
+#aplus-root .ap-tabs button{flex:1 1 auto;min-width:78px;height:26px;border:1px solid var(--line2);border-radius:5px;background:transparent;color:var(--txt2);font-size:calc(11px * var(--fs));cursor:pointer;white-space:nowrap}
+#aplus-root .ap-tabs button.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
+
+#aplus-root .ap-mini{height:24px;padding:0 7px;border:1px solid var(--line2);border-radius:5px;background:transparent;color:var(--txt2);font-size:calc(10.5px * var(--fs));cursor:pointer;white-space:nowrap}
+#aplus-root .ap-mini:hover{color:var(--accent);border-color:var(--accent)}
+#aplus-root .ap-mini:disabled{opacity:.45;cursor:default}
+/* 选中 / 已开启：实心强调色，一眼能看出状态 */
+#aplus-root .ap-mini.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;
+  box-shadow:0 1px 2px rgba(0,0,0,.10)}
+#aplus-root .ap-mini.on:hover{color:#fff;border-color:var(--accent);filter:brightness(1.08)}
+/* 功能开关：前面带一个状态圆点（开=实心白点，关=空心灰点） */
+#aplus-root .ap-sw{display:inline-flex;align-items:center;gap:5px}
+#aplus-root .ap-sw::before{content:"";width:6px;height:6px;border-radius:50%;flex:0 0 auto;
+  border:1px solid var(--txt3);background:transparent;transition:background .15s,border-color .15s}
+#aplus-root .ap-sw.on::before{background:#fff;border-color:#fff}
+#aplus-root .ap-primary{border-color:var(--accent);background:var(--accent);color:#fff}
+#aplus-root .ap-primary:hover{color:#fff;filter:brightness(1.06)}
+#aplus-root .ap-state{font-size:calc(10.5px * var(--fs));color:var(--ok);flex:0 0 auto;white-space:nowrap}
+
+#aplus-root .ap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--thumb-g,92px),1fr));gap:6px;margin-top:2px}
+/* 素材组（像 PS 的图层组）：组头一行 + 组内网格 */
+#aplus-root .ap-gwrap{display:flex;flex-direction:column;gap:7px;min-height:0;flex:0 0 auto}
+#aplus-root .ap-grp{display:flex;align-items:center;gap:5px;padding:2px 2px 3px;border-bottom:1px solid var(--line);cursor:default}
+#aplus-root .ap-grp + .ap-grp{margin-top:1px}
+#aplus-root .ap-gcaret{width:11px;flex:none;text-align:center;font-size:calc(8.5px * var(--fs));color:var(--txt3);cursor:pointer}
+#aplus-root .ap-grp[data-g] .ap-gcaret:hover{color:var(--accent)}
+#aplus-root .ap-gname{font-size:calc(11px * var(--fs));font-weight:600;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:text}
+#aplus-root .ap-gname:hover{color:var(--accent)}
+#aplus-root .ap-gn{font-size:calc(9.5px * var(--fs));color:var(--txt3);font-variant-numeric:tabular-nums;flex:none}
+#aplus-root .ap-gbtn{height:17px;line-height:15px;padding:0 5px;font-size:calc(10px * var(--fs));flex:none}
+#aplus-root .ap-ginp{height:20px;font-size:calc(11px * var(--fs));padding:0 5px;max-width:120px}
+#aplus-root .ap-grp-none .ap-gname{font-weight:400;color:var(--txt3)}
+#aplus-root .ap-grp.drop-hover{background:var(--accent);border-radius:5px}
+#aplus-root .ap-grp.drop-hover .ap-gname,#aplus-root .ap-grp.drop-hover .ap-gn{color:#fff}
+#aplus-root .ap-grp.drop-hover .ap-gcaret{color:#fff}
+#aplus-root .ap-th.ap-dragging{opacity:.45}
+#aplus-root .ap-rng{flex:1;min-width:44px;height:18px;margin:0;padding:0;background:transparent;cursor:pointer;-webkit-appearance:none;appearance:none;--fill:50%}
+#aplus-root .ap-rng::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:linear-gradient(to right,var(--accent) 0,var(--accent) var(--fill),var(--line2) var(--fill),var(--line2) 100%)}
+#aplus-root .ap-rng::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;margin-top:-4px;border-radius:50%;background:var(--panel);border:2px solid var(--accent);box-shadow:0 1px 3px rgba(10,14,20,.35);cursor:grab}
+#aplus-root .ap-rng:active::-webkit-slider-thumb{transform:scale(1.15);cursor:grabbing}
+#aplus-root .ap-rngv{flex:none;min-width:26px;text-align:right;font-variant-numeric:tabular-nums;color:var(--txt2);font-weight:600}
+#aplus-root .ap-th{position:relative;aspect-ratio:1/1;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--sunk);cursor:pointer}
+#aplus-root .ap-th img{width:100%;height:100%;object-fit:cover;display:block}
+#aplus-root .ap-th:hover{border-color:var(--accent)}
+#aplus-root .ap-th.sel{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent)}
+#aplus-root .ap-th.sel::after{content:"";position:absolute;right:3px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px rgba(255,255,255,.9)}
+#aplus-root .ap-th-n{position:absolute;left:4px;bottom:4px;padding:0 4px;border-radius:3px;background:rgba(12,16,20,.62);color:#fff;font-size:calc(9.5px * var(--fs));line-height:15px}
+#aplus-root .ap-star{position:absolute;right:4px;top:2px;color:#F0B233;font-size:calc(12px * var(--fs));text-shadow:0 1px 2px rgba(0,0,0,.5)}
+
+#aplus-root .ap-fav{display:flex;flex-direction:column;gap:6px;overflow:auto;flex:1;min-height:0;max-height:none}
+#aplus-root .ap-pad[data-pad="gen"] .ap-card:last-child{flex:1;min-height:0}
+/* 面板很窄时自动竖排，避免栏宽被压到看不清 */
+#aplus-root.narrow .ap-body{flex-direction:column;overflow:auto}
+#aplus-root.narrow .ap-pad{flex:0 0 auto}
+#aplus-root .ap-favrow{display:flex;gap:6px;align-items:flex-start;flex-wrap:wrap;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--panel2)}
+#aplus-root .ap-favimg{width:var(--thumb-f,54px);height:var(--thumb-f,54px);object-fit:cover;border-radius:4px;flex:none;background:var(--sunk)}
+#aplus-root .ap-favmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+#aplus-root .ap-favmain .ap-sel{height:22px;font-size:calc(10.5px * var(--fs))}
+#aplus-root .ap-note{font-size:calc(10.5px * var(--fs));padding:3px 6px;background:transparent;border-style:dashed}
+#aplus-root .ap-favact{display:flex;flex-direction:column;gap:4px}
+#aplus-root .ap-favact .ap-mini{width:24px;padding:0;height:22px}
+
+#aplus-root .ap-ft{flex:none;display:flex;align-items:center;gap:8px;padding:9px 12px;border-top:1px solid var(--line);background:var(--panel2)}
+#aplus-root .ap-btn{height:30px;padding:0 12px;border:1px solid var(--line2);border-radius:6px;background:transparent;color:var(--txt2);font-size:calc(11.5px * var(--fs));cursor:pointer}
+#aplus-root .ap-btn.ap-primary{color:#fff;border-color:var(--accent);background:var(--accent);font-weight:600}
+#aplus-root .ap-fhint{flex:none;text-align:left;font-size:calc(10.5px * var(--fs));color:var(--txt3)}
+/* 竖排：提示行太占地方，隐藏（快捷键说明在横排仍可见） */
+#aplus-root.col .ap-fhint{display:none}
+/* 竖排：调板内边距收紧，给内容多留一点高度 */
+#aplus-root.col .ap-pad-bd{padding-top:1px}
+#aplus-root .ap-hide{display:none!important}
+/* 导入按钮隶属提示词面板：钉在面板底部，不随内容滚动 */
+#aplus-root .ap-importbtn{
+  flex:0 0 auto;margin:0 9px 9px;height:32px;background:var(--accent);color:#fff;font-weight:600;
+  border-radius:6px;
+}
+
+#aplus-root .ap-toast{
+  position:absolute;left:50%;bottom:56px;transform:translate(-50%,8px);max-width:88%;
+  padding:7px 12px;border-radius:6px;background:rgba(20,24,28,.92);color:#fff;font-size:calc(11px * var(--fs));
+  opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:5;
+}
+#aplus-root .ap-toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* 右键菜单 */
+#aplus-root .ap-ctx{
+  position:fixed;display:none;flex-direction:column;min-width:112px;
+  padding:4px;border:1px solid var(--line2);border-radius:8px;background:var(--panel);
+  box-shadow:0 10px 26px rgba(12,18,26,.22);z-index:2147483700;
+}
+#aplus-root .ap-ctx.on{display:flex}
+#aplus-root .ap-ctx button{
+  height:28px;border:0;background:transparent;color:var(--txt);font-size:calc(11.5px * var(--fs));
+  text-align:left;padding:0 8px;border-radius:5px;cursor:pointer;font-family:inherit;
+}
+#aplus-root .ap-ctx button:hover{background:var(--accent-soft);color:var(--accent)}
+#aplus-root .ap-ctx button.on{color:var(--accent);font-weight:600}
+#aplus-root .ap-ctx .ap-pickhd{padding:2px 8px 5px;margin-bottom:4px;border-bottom:1px solid var(--line);font-size:calc(10px * var(--fs));line-height:1.35;color:var(--txt3);white-space:nowrap}
+
+/* 网页进到大图 / 详情弹层时，整个面板让位 */
+#aplus-root.ap-away{opacity:0 !important;visibility:hidden !important;pointer-events:none !important;transition:opacity .16s ease}
+#aplus-root{transition:opacity .16s ease, translate .2s ease}
+/* 手动一键显隐（Ctrl+Shift+H） */
+#aplus-root.ap-hide{opacity:0 !important;visibility:hidden !important;pointer-events:none !important}
+
+/* 左侧对话栏弹出时：往右让位。
+   root 上有 transform:none!important（防页面样式污染），所以这里用独立的 translate 属性做位移 */
+#aplus-root.ap-shift, #aplus-root .ap-pad.ap-shift{transition:translate .2s ease}
+#aplus-root.ap-shift{translate:var(--ap-shift-x,0px) 0}
+#aplus-root .ap-pad.ap-shift{translate:var(--ap-shift-x,0px) 0}
+
+/* 中线左侧的面板暂时隐身；落在右侧的独立窗用 ap-keep 保住可见。
+   先淡出到透明，再把 visibility 推迟 0.18s 切走，回来时立刻可见并淡入。 */
+#aplus-root.ap-dim{opacity:0 !important;pointer-events:none !important;visibility:hidden !important;
+  transition:opacity .18s ease, translate .2s ease, visibility 0s linear .18s}
+#aplus-root.ap-dim .ap-pad.ap-keep{opacity:1 !important;visibility:visible !important;pointer-events:auto !important}
+#aplus-root .ap-pad.ap-dim{opacity:0 !important;pointer-events:none !important;visibility:hidden !important;
+  transition:opacity .18s ease, translate .2s ease, visibility 0s linear .18s}
+
+/* 隐身时留在右下角的「叫回来」小点（防误判失联） */
+#apAwayRescue{position:fixed;right:10px;bottom:10px;width:30px;height:30px;border-radius:9px;display:flex;
+  align-items:center;justify-content:center;background:#22242a;color:#fff;border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 6px 18px rgba(0,0,0,.35);cursor:pointer;z-index:2147483640;opacity:.82;transition:opacity .15s}
+#apAwayRescue:hover{opacity:1}
+
+/* 折叠分区 */
+#aplus-root .ap-sec{display:flex;flex-direction:column;gap:7px;min-height:0}
+#aplus-root .ap-sec.off{display:none}
+#aplus-root .ap-fold{padding:0 5px;color:var(--txt3)}
+/* 收藏行状态徽标 */
+#aplus-root .ap-favwrap{position:relative;flex:none;line-height:0}
+#aplus-root .ap-st{position:absolute;left:0;top:0;font-style:normal;font-size:calc(9px * var(--fs));line-height:14px;padding:0 3px;border-radius:3px 0 3px 0;color:#fff}
+#aplus-root .ap-st.done{background:#2E8B62}
+#aplus-root .ap-st.pick{background:#B5761E}
+/* 文档预览：像 Word 纸面一样图文混排 */
+#aplus-root .ap-doc{display:flex;flex-direction:column;gap:7px;flex:1;min-height:0;overflow:auto}
+#aplus-root .ap-paper{
+  background:#fff;border:1px solid var(--line);border-radius:6px;
+  padding:12px 14px;display:flex;flex-direction:column;gap:6px;
+  font-size:calc(11.5px * var(--fs));line-height:1.75;color:var(--txt);
+  box-shadow:0 1px 2px rgba(12,18,26,.05);
+}
+#aplus-root .ap-dline{margin:0;padding:1px 3px;border-radius:3px;cursor:pointer;word-break:break-word;white-space:pre-wrap}
+#aplus-root .ap-dline:hover{background:var(--accent-soft);color:var(--accent)}
+#aplus-root .ap-dnum{display:flex;gap:4px;align-items:flex-start}
+#aplus-root .ap-dn{flex:none;min-width:1.15em;color:var(--txt3);font-variant-numeric:tabular-nums}
+#aplus-root .ap-dblank{height:6px}
+#aplus-root .ap-dimg{max-width:100%;display:block;margin:3px 0;border-radius:4px;border:1px solid var(--line);cursor:zoom-in}
+#aplus-root .ap-dslide{border-top:1px dashed var(--line);padding-top:7px;margin-top:2px}
+#aplus-root .ap-dslidehd{font-size:calc(10.5px * var(--fs));color:var(--txt3);margin-bottom:3px}
+#aplus-root .ap-dsline{padding:1px 3px;border-radius:3px;cursor:pointer;word-break:break-word;white-space:pre-wrap}
+#aplus-root .ap-dsline:hover{background:var(--accent-soft);color:var(--accent)}
+#aplus-root .ap-dsimg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:4px}
+#aplus-root .ap-dsimg img{width:100%;border-radius:4px;border:1px solid var(--line);display:block;cursor:zoom-in}
+
+#aplus-root .ap-layer{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(14,18,22,.55);z-index:6}
+#aplus-root .ap-layer.on{display:flex}
+#aplus-root .ap-box{width:calc(100% - 24px);max-height:calc(100% - 20px);display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line2);border-radius:10px;overflow:hidden;box-shadow:0 18px 44px rgba(0,0,0,.28)}
+#aplus-root .ap-box-hd{display:flex;align-items:center;gap:6px;padding:9px 10px;border-bottom:1px solid var(--line);font-size:calc(11.5px * var(--fs));font-weight:600}
+#aplus-root .ap-box-bd{padding:10px;display:flex;flex-direction:column;gap:7px;overflow:auto}
+#aplus-root .ap-box-ft{padding:8px 10px;border-top:1px solid var(--line)}
+#aplus-root .ap-view{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:10px;background:var(--sunk);overflow:hidden;position:relative;cursor:grab;touch-action:none}
+#aplus-root .ap-view img{max-width:100%;max-height:100%;display:block;border-radius:4px;transform-origin:center center;user-select:none;-webkit-user-drag:none}
+#aplus-root .ap-view.dragging{cursor:grabbing}
+
+/* 大图查看：脱离面板，固定在屏幕中央 */
+#aplus-root #apView{
+  position:fixed;left:0;top:0;right:0;bottom:0;inset:0;z-index:2147483600;
+  background:rgba(8,10,12,.66);
+}
+#aplus-root #apView .ap-box{
+  width:min(92vw,1360px);height:min(88vh,940px);max-width:none;max-height:none;
+  box-shadow:0 26px 90px rgba(0,0,0,.5);
+}
+#aplus-root #apView .ap-view{padding:14px}
+
+#aplus-root .ap-snips{display:flex;flex-direction:column;gap:5px;max-height:200px;overflow:auto}
+#aplus-root .ap-snip{display:flex;align-items:flex-start;gap:6px;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--panel2)}
+#aplus-root .ap-snip-t{flex:1;min-width:0;font-size:calc(10.5px * var(--fs));color:var(--txt2);word-break:break-all;line-height:1.5}
+#aplus-root .ap-snip-t b{display:block;font-size:calc(11px * var(--fs));color:var(--txt);margin-bottom:1px}
+
+#aplus-root .ap-diff{max-height:44vh;overflow:auto;border:1px solid var(--line);border-radius:6px;background:var(--sunk);padding:6px 0;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:calc(11px * var(--fs));line-height:1.6}
+#aplus-root .ap-diff .dl{display:flex;gap:6px;padding:1px 10px;white-space:pre-wrap;word-break:break-all;color:var(--txt2)}
+#aplus-root .ap-diff .dl .s{flex:none;width:9px;color:var(--txt3)}
+#aplus-root .ap-diff .dl.add{background:rgba(63,191,135,.16);color:#227A55}
+#aplus-root .ap-diff .dl.del{background:rgba(229,83,61,.14);color:#B03F2C;text-decoration:line-through}
+
+/* 设置层：色板与取色 */
+#aplus-root .ap-setbox{width:340px;max-width:calc(100% - 24px)}
+/* 设置层：脱离面板，固定在屏幕中央 */
+#aplus-root #apSetLayer{
+  position:fixed;inset:0;z-index:2147483600;background:rgba(8,10,12,.55);
+}
+#aplus-root #apSetLayer .ap-box{
+  width:min(92vw,480px);max-width:none;max-height:min(88vh,780px);
+  box-shadow:0 26px 90px rgba(0,0,0,.45);
+}
+#aplus-root #apSetLayer .ap-box-bd{padding:14px;gap:10px}
+/* 设置层：分组之间加分隔，长列表更好扫读 */
+#aplus-root #apSetLayer .ap-box-bd > .ap-lbl{
+  border-top:1px solid var(--line);padding-top:11px;margin-top:2px;color:var(--txt2);font-weight:600;letter-spacing:.3px;
+}
+#aplus-root #apSetLayer .ap-box-bd > .ap-lbl:first-child{border-top:0;padding-top:0;margin-top:0}
+/* 更新日志：标题行可点击折叠 */
+#aplus-root #apSetLayer .ap-foldhdr{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;border-radius:5px;margin-left:-4px;padding-left:4px;padding-right:4px}
+#aplus-root #apSetLayer .ap-foldhdr:hover{background:var(--sunk)}
+#aplus-root #apSetLayer .ap-caret{font-size:calc(9px * var(--fs));color:var(--txt3);width:9px;flex:none;line-height:1}
+#aplus-root #apSetLayer .ap-foldhdr:hover .ap-caret{color:var(--accent)}
+#aplus-root #apSetLayer .ap-cnt{font-weight:400;font-size:calc(10px * var(--fs));color:var(--txt3);letter-spacing:.2px}
+/* 版面预设列表 */
+#aplus-root .ap-presets{display:flex;flex-direction:column;gap:5px}
+#aplus-root .ap-presets .ap-presetrow{
+  display:flex;align-items:center;gap:6px;padding:5px 7px;border:1px solid var(--line);
+  border-radius:6px;background:var(--panel2);
+}
+#aplus-root .ap-presets .ap-presetrow b{font-weight:600;font-size:calc(11.5px * var(--fs));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+#aplus-root .ap-presets .ap-presetrow .ap-hint{flex:none}
+#aplus-root .ap-presets .ap-presetrow .ap-mini{flex:none;height:22px}
+#aplus-root .ap-presets .ap-empty{color:var(--txt3);font-size:calc(10.5px * var(--fs));padding:2px 0}
+#aplus-root .ap-sws{flex-wrap:wrap;gap:6px}
+#aplus-root .ap-swatch{
+  width:24px;height:24px;border-radius:6px;border:1px solid var(--line2);
+  cursor:pointer;padding:0;font-family:inherit;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:10px;color:var(--txt2);background:transparent;
+}
+#aplus-root .ap-swatch[data-c=""]{width:auto;padding:0 8px}
+#aplus-root .ap-swatch.on{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+#aplus-root .ap-pickwrap{
+  display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 8px 0 3px;
+  border:1px solid var(--line2);border-radius:6px;cursor:pointer;
+  font-size:10px;color:var(--txt2);
+}
+#aplus-root .ap-pickwrap input{width:18px;height:18px;border:0;padding:0;background:transparent;cursor:pointer}
+/* 设置层：更新日志 */
+#aplus-root .ap-log{display:flex;flex-direction:column;gap:4px;max-height:190px;overflow:auto;flex:0 0 auto}
+#aplus-root .ap-logrow{display:flex;gap:8px;align-items:baseline;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:var(--panel2)}
+#aplus-root .ap-logrow b{flex:none;min-width:52px;font-weight:600;font-size:calc(10.5px * var(--fs));color:var(--accent);font-variant-numeric:tabular-nums}
+#aplus-root .ap-logrow span{min-width:0;font-size:calc(10.5px * var(--fs));color:var(--txt2);line-height:1.55}

@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "Amazon 工作台",
+  "version": "0.6.32",
+  "description": "在 chatgpt.com 页面旁显示亚马逊 A+ 制作辅助面板：提示词管理、只填不发送的导入、页面图片提取与收藏导出。",
+  "permissions": [
+    "storage",
+    "downloads"
+  ],
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ],
+      "js": [
+        "jszip.min.js",
+        "content.js"
+      ],
+      "css": [
+        "panel.css"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "action": {
+    "default_title": "Amazon 工作台（在 chatgpt 页面右侧显示）"
+  }
+}
